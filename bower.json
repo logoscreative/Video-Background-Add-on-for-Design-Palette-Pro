@@ -1,0 +1,22 @@
+{
+  "name": "Genesis Background Video",
+  "version": "1.0.0",
+  "authors": [
+    "Cliff Seal <cliff@logoscreative.co>"
+  ],
+  "description": "Display silent background videos for desktop users in your Genesis theme.",
+  "main": "genesis-bg-video.php",
+  "license": "GPL",
+  "homepage": "http://evermo.re",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "vide": "~0.5.0"
+  }
+}
