@@ -17,6 +17,6 @@
     "tests"
   ],
   "dependencies": {
-    "vide": "~0.5.0"
+    "vide": "~0.5.1"
   }
 }

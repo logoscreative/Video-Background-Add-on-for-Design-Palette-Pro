@@ -203,16 +203,29 @@ class GP_Pro_Video_Background
 
 		// Set up the 2 sections.
 		$sections['video_background']   = array(
-			'video-background--global-setup' => array(
-				'title'     => __( 'Homepage Video', 'gppro-video-background' ),
+			'video-background--mp4-setup' => array(
+				'title'     => __( 'Video (MP4)', 'gppro-video-background' ),
 				'data'      => array(
-					'video-background--global'   => array(
+					'video-background--mp4'   => array(
 						'input'    => 'custom',
 						'target'   => '',
 						'selector' => '',
 						'image'    => 'video',
-						'desc'      => __( 'The video will appear as a background in the top main section of your homepage.', 'gppro-video-background' ),
-						'callback'  => array( $this, 'get_video_background_input' ),
+						'desc'      => __( 'Only the .mp4 file type is allowed here.', 'gppro-video-background' ),
+						'callback'  => array( $this, 'get_video_background_mp4_input' ),
+					),
+				),
+			),
+			'video-background--webm-setup' => array(
+				'title'     => __( 'Video (WebM)', 'gppro-video-background' ),
+				'data'      => array(
+					'video-background--webm'   => array(
+						'input'    => 'custom',
+						'target'   => '',
+						'selector' => '',
+						'image'    => 'video',
+						'desc'      => __( 'Only the .webm file type is allowed here.', 'gppro-video-background' ),
+						'callback'  => array( $this, 'get_video_background_webm_input' ),
 					),
 				),
 			),
@@ -240,7 +253,7 @@ class GP_Pro_Video_Background
 	 *
 	 * @return string $input
 	 */
-	public static function get_video_background_input( $field, $item ) {
+	public static function get_video_background_mp4_input( $field, $item ) {
 
 		// bail if pieces are missing
 		if ( ! $field || ! $item || !$this->is_theme_supported() ) {
@@ -254,8 +267,8 @@ class GP_Pro_Video_Background
 		$value  = '';
 
 		// If data for that viewport exists, send it back.
-		if ( ! empty( $data[ 'video-background-global' ] ) ) {
-			$value  = $data[ 'video-background-global' ];
+		if ( ! empty( $data[ 'video-background-mp4' ] ) ) {
+			$value  = $data[ 'video-background-mp4' ];
 		}
 
 		// escape the URL if we have it
@@ -265,12 +278,12 @@ class GP_Pro_Video_Background
 		$input  = '';
 
 		// field wrapper
-		$input .= '<div class="gppro-input gppro-image-input gppro-video-background-input">';
+		$input .= '<div class="gppro-input gppro-image-input gppro-' . sanitize_html_class( $id ) . '-input">';
 
 		$input .= '<div class="gppro-input-item gppro-input-wrap gppro-image-wrap gppro-video-background-wrap">';
 
 		$input .= '<span class="gppro-image-field-wrap">';
-		$input .= '<input type="url" id="' . sanitize_html_class( $id ) . '" name="' . esc_attr( $name ) . '" class="gppro-upload-field gppro-video-background-field" value="'.esc_url( $value ).'">';
+		$input .= '<input type="url" id="' . sanitize_html_class( $id ) . '" name="' . esc_attr( $name ) . '" class="gppro-upload-field gppro-' . sanitize_html_class( $id ) . '-field" value="'.esc_url( $value ).'">';
 		$input .= '</span>';
 
 		$input .= '</div>';
@@ -278,7 +291,66 @@ class GP_Pro_Video_Background
 		$input .= '<div class="gppro-input-item gppro-input-label choice-label">';
 
 		$input .= '<span class="choice-label image-choice-label">';
-		$input .= '<input id="' . sanitize_html_class( $field ) . '" type="button" class="button button-secondary button-small gppro-image-upload gppro-video-background-upload" value="' . __( 'Select', 'gppro' ) . '">';
+		$input .= '<input id="' . sanitize_html_class( $field ) . '" type="button" class="button button-secondary button-small gppro-image-upload gppro-' . sanitize_html_class( $id ) . '-upload" value="' . __( 'Select', 'gppro' ) . '">';
+		$input .= '</span>';
+
+		$input .= '</div>';
+
+		// handle description
+		if ( ! empty( $item['desc'] ) ) {
+			$input .= GP_Pro_Setup::get_input_desc( $item['desc'] );
+		}
+
+		$input .= '</div>';
+
+		// return the input
+		return $input;
+	}
+
+	/**
+	 * input field for video-background uploader
+	 *
+	 * @return string $input
+	 */
+	public static function get_video_background_webm_input( $field, $item ) {
+
+		// bail if pieces are missing
+		if ( ! $field || ! $item || !$this->is_theme_supported() ) {
+			return;
+		}
+
+		// fetch data for field
+		$id     = GP_Pro_Helper::get_field_item( $field, 'id' );
+		$name   = GP_Pro_Helper::get_field_item( $field, 'name' );
+		$data   = get_option( 'gppro-settings' );
+		$value  = '';
+
+		// If data for that viewport exists, send it back.
+		if ( ! empty( $data[ 'video-background-webm' ] ) ) {
+			$value  = $data[ 'video-background-webm' ];
+		}
+
+		// escape the URL if we have it
+		$value  = ! empty( $value ) ? esc_url( $value ) : '';
+
+		// an empty
+		$input  = '';
+
+		// field wrapper
+		$input .= '<div class="gppro-input gppro-image-input gppro-' . sanitize_html_class( $id ) . '-input">';
+
+		$input .= '<div class="gppro-input-item gppro-input-wrap gppro-image-wrap gppro-video-background-wrap">';
+
+		$input .= '<span class="gppro-image-field-wrap">';
+		$input .= '<input type="url" id="' . sanitize_html_class( $id ) . '" name="' . esc_attr( $name ) . '" class="gppro-upload-field gppro-' . sanitize_html_class( $id ) . '-field" value="'.esc_url( $value ).'">';
+		$input .= '</span>';
+
+		$input .= '</div>';
+
+		$input .= '<div class="gppro-input-item gppro-input-label choice-label">';
+
+		$input .= '<span class="choice-label image-choice-label">';
+		$input .= '<input id="' . sanitize_html_class( $field ) . '" type="button" class="button button-secondary button-small gppro-image-upload gppro-' . sanitize_html_class( $id ) . '-upload" value="' . __( 'Select', 'gppro' ) . '">';
 		$input .= '</span>';
 
 		$input .= '</div>';
@@ -417,7 +489,7 @@ class GP_Pro_Video_Background
 			'vide',
 			plugins_url('bower_components/vide/dist/jquery.vide.min.js', __FILE__),
 			array('jquery'),
-			'0.5.0',
+			'0.5.1',
 			true
 		);
 
@@ -447,8 +519,13 @@ class GP_Pro_Video_Background
 		$poster = '';
 
 		// If data for that viewport exists, send it back.
-		if ( ! empty( $data[ 'video-background-global' ] ) ) {
-			$video = $data[ 'video-background-global' ];
+		if ( ! empty( $data[ 'video-background-mp4' ] ) ) {
+			$mp4 = $data[ 'video-background-mp4' ];
+		}
+
+		// If data for that viewport exists, send it back.
+		if ( ! empty( $data[ 'video-background-webm' ] ) ) {
+			$webm = $data[ 'video-background-webm' ];
 		}
 
 		// If data for that viewport exists, send it back.
@@ -457,14 +534,15 @@ class GP_Pro_Video_Background
 		}
 
 		// Escape the URL if we have it
-		$video = ! empty( $video ) ? esc_url( $video ) : '';
+		$mp4 = ! empty( $mp4 ) ? esc_url( $mp4 ) : '';
+		$webm = ! empty( $webm ) ? esc_url( $webm ) : '';
 		$poster  = ! empty( $poster ) ? esc_url( $poster ) : '';
 		$posterext = pathinfo($poster, PATHINFO_EXTENSION);
 
 		// Get target DOM element
 		$target = $this->get_target_dom_element();
 
-		if ( $video && $target ) {
+		if ( $mp4 && $target ) {
 
 			echo '
 			<script>
@@ -473,7 +551,8 @@ class GP_Pro_Video_Background
 					$targetDiv
 					.addClass("genesis-bg-video")
 					.vide({
-					    mp4: "' . $video . '",
+					    mp4: "' . $mp4 . '",
+					    webm: "' . $webm . '",
 					    poster: "' . $poster . '"
 					}, {
 						position: "0% 0%",
